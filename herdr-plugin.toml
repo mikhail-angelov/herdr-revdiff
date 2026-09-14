@@ -1,0 +1,21 @@
+id = "herdr-revdiff"
+name = "herdr-revdiff"
+version = "0.1.0"
+min_herdr_version = "0.7.5"
+platforms = ["linux", "macos"]
+description = "Open revdiff full-screen for the focused repository with smart Git scope detection."
+
+[[build]]
+command = ["sh", "-c", "exec bash \"${HERDR_PLUGIN_ROOT:-.}/bin/ensure-revdiff.sh\""]
+
+[[panes]]
+id = "revdiff"
+title = "revdiff"
+placement = "tab"
+command = ["sh", "-c", "exec bash \"${HERDR_PLUGIN_ROOT:-.}/bin/run.sh\""]
+
+[[actions]]
+id = "open"
+title = "revdiff: review changes"
+contexts = ["pane", "workspace"]
+command = ["sh", "-c", "exec bash \"${HERDR_PLUGIN_ROOT:-.}/bin/open.sh\""]
