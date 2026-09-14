@@ -2,6 +2,9 @@
 
 Open [revdiff](https://github.com/umputun/revdiff) in a full-size Herdr tab with one keypress.
 
+<img height="400" alt="image" src="https://github.com/user-attachments/assets/d16c34ad-3697-4a8f-94d1-a4b3988087c5" />
+
+
 The scope is selected automatically:
 
 - on the repository's default branch, review uncommitted changes against `HEAD`;
