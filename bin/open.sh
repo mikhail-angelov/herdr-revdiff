@@ -22,8 +22,8 @@ repo_root="$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null)" || fail "not 
 
 panes_json="$("$HERDR" pane list --workspace "$WORKSPACE_ID")" || fail "cannot list panes in workspace $WORKSPACE_ID"
 
-while IFS=$'\t' read -r pane_id pane_cwd; do
-  [ -n "$pane_id" ] && [ -n "$pane_cwd" ] || continue
+while IFS=$'\t' read -r pane_id pane_cwd tab_id; do
+  [ -n "$pane_id" ] && [ -n "$pane_cwd" ] && [ -n "$tab_id" ] || continue
   pane_repo="$(git -C "$pane_cwd" rev-parse --show-toplevel 2>/dev/null || true)"
   [ "$pane_repo" = "$repo_root" ] || continue
 
@@ -32,16 +32,20 @@ while IFS=$'\t' read -r pane_id pane_cwd; do
     any(.result.process_info.foreground_processes[]?;
       ((.argv0 // (.argv[0] // "")) | split("/") | last) == "revdiff")
   ' >/dev/null 2>&1; then
-    "$HERDR" plugin pane focus "$pane_id" >/dev/null
+    "$HERDR" tab focus "$tab_id" >/dev/null
     exit 0
   fi
 done < <(printf '%s' "$panes_json" |
-  jq -r '.result.panes[]? | [(.pane_id // empty), (.foreground_cwd // .cwd // "")] | @tsv')
+  jq -r '.result.panes[]? | [(.pane_id // empty), (.foreground_cwd // .cwd // ""), (.tab_id // empty)] | @tsv')
 
-"$HERDR" plugin pane open \
+open_json="$("$HERDR" plugin pane open \
   --plugin "$PLUGIN_ID" \
   --entrypoint revdiff \
   --placement tab \
   --workspace "$WORKSPACE_ID" \
   --cwd "$repo_root" \
-  --focus >/dev/null
+  --no-focus)" || fail "cannot open revdiff"
+
+tab_id="$(printf '%s' "$open_json" | jq -r '.result.plugin_pane.pane.tab_id // empty')"
+[ -n "$tab_id" ] || fail "cannot determine the revdiff tab"
+"$HERDR" tab focus "$tab_id" >/dev/null
