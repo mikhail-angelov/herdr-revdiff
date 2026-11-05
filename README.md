@@ -15,6 +15,18 @@ The default branch is taken from `origin/HEAD`, falling back to the first of `or
 
 If revdiff is already open in the workspace **for the same repository**, the same key focuses that tab instead of opening another one.
 
+revdiff is launched with `-o ./.review.md`: annotations added inside revdiff (`a` to annotate, `O` to flush) land in `.review.md` at the repository root. Mouse tracking stays enabled — wheel and click navigation work.
+
+### Selecting text with the mouse
+
+To select text, suspend mouse tracking with the `toggle_mouse` action: the terminal regains the mouse and plain drag selects text; pressing the key again restores wheel and click handling. The action has no default key — map it once in `~/.config/revdiff/keybindings`:
+
+```sh
+echo 'map m toggle_mouse' >> ~/.config/revdiff/keybindings
+```
+
+`toggle_mouse` landed in revdiff after v1.14.0. Until the next revdiff release ships, it is available only in builds from master; re-run `herdr plugin install` afterwards to update the bundled binary.
+
 ## Install
 
 ```sh

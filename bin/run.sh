@@ -33,8 +33,12 @@ if [ -z "$default_ref" ]; then
 fi
 
 default_branch="${default_ref#origin/}"
+# -o gives revdiff an output file for flushing annotations (O in the TUI).
+# Mouse tracking stays enabled, so wheel and click work; with a revdiff build
+# that supports the toggle_mouse action, map it (e.g. "map m toggle_mouse" in
+# ~/.config/revdiff/keybindings) to suspend tracking and select text with the mouse.
 if [ -n "$default_ref" ] && [ -n "$current_branch" ] && [ "$current_branch" != "$default_branch" ]; then
-  exec "$revdiff" "$default_ref" --untracked
+  exec "$revdiff" -o ./.review.md "$default_ref" --untracked
 fi
 
-exec "$revdiff" --untracked
+exec "$revdiff" -o ./.review.md --untracked
